@@ -36,7 +36,7 @@ Repository amb el contingut del servidor central.
 Llistat de comandes que hi han disponibles per aquest projecte:
 
 * `npm run fetch`: Instal·la els nostres models.
-* `npm run build`: Compila tot el TypeScript a JavaScript, baix una nova carpeta `./dist/`, a més, executa la comanda de tests `jest`.
+* `npm run build`: Compila tot el TypeScript a JavaScript, baix una nova carpeta `./dist/`, a més, executa la comanda de tests.
 * `npm start`: `npm run build` + `node ./dist/index.js`; Primer Compila + Test, finalment executa el resultat de la compilació.
 
 
