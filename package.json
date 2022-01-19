@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "fetch": "if [ ! -d modules/Moduls-Ciber ]; then git clone https://github.com/Big-3/Moduls-Ciber.git ./modules/Moduls-Ciber; else echo 'Custom Modules already exists'; fi && npm i ./modules/Moduls-Ciber/",
-    "test": "jest"
+    "test": "npm run fetch && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'tests/**/*.ts'",
+    "build": "tsc && npm test",
+    "start": "npm run build && node ./dist/index.js"
   },
   "keywords": [
     "Servidor",
@@ -21,10 +23,16 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/chai": "^4.3.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/mocha": "^9.0.0",
     "@types/morgan": "^1.9.3",
-    "jest": "^27.4.7",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.4",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   }
 }
