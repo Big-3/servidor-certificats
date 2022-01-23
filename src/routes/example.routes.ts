@@ -1,13 +1,19 @@
 // Example routes
 import { Router } from "express";
-import { addExample, getExample } from '../controllers/example.controller';
+import {generateCertificate, getUser, challengeUser, validateChallengeUser} from '../controllers/example.controller';
 
 const example_routes = Router();
 
-example_routes.route('/cert/example/:id')
-    .get(getExample);
+example_routes.route('/cert/issue')
+    .get(generateCertificate);
 
-example_routes.route('/cert/add/example')
-    .post(addExample);
+example_routes.route('/cert/user')
+    .post(getUser);
+
+example_routes.route('/user/validate')
+    .get(challengeUser);
+
+example_routes.route('/user/validate')
+    .post(validateChallengeUser);
 
 export default example_routes;
