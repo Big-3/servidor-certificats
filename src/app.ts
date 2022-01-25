@@ -17,8 +17,11 @@ app.set('PORT', process.env.PORT || 8080); // then perform app.get('PORT') if(pr
 app.set('MODE', 'dev');
 
 // routes. EntryPoint @ip/api/{whatever}
-import example_routes from './routes/example.routes';
-app.use('/api', example_routes);
+import certificate_routes from './routes/certificate.routes';
+import challenge_routes from './routes/challenge.routes';
+
+app.use('/api', certificate_routes);
+app.use('/api', challenge_routes);
 
 
 export default app; // EXPORT APP 
