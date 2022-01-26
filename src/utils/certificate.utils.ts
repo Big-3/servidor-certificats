@@ -1,14 +1,16 @@
-import { RSAPrivateKey, RSAPublicKey } from "@big3/ciber-modules";
+import { LagrangeInterpolation, RSAPrivateKey, RSAPublicKey, SharedKey } from "@big3/ciber-modules";
 import { Certificate } from "../models/certificate.model";
-import { hexToBigint } from "bigint-conversion";
+import crypto from "crypto";
+import { hexToBigint, textToBigint } from "bigint-conversion";
+import * as shamir from 'shamirs-secret-sharing-ts';
 import {Logger} from 'tslog';
 const logger = new Logger();
 
-export function createCertificate(userPubKey: RSAPublicKey, serverPrivateKey: RSAPrivateKey): [boolean, Certificate]{
+export function createCertificate(userPubKey: RSAPublicKey, serverPrivateKey: RSAPrivateKey, blindCipher: string): [boolean, Certificate]{
     try
     {
         logger.info(`Issue New Certificate.`);
-        return [true, new Certificate(userPubKey, serverPrivateKey.sign(serverPrivateKey.getRSAPublicKey().getExpE()))]
+        return [true, new Certificate(userPubKey, serverPrivateKey.sign(hexToBigint(blindCipher)))]
     }
     catch (err)
     {
@@ -30,7 +32,7 @@ export function certificateFromSafeJson(safeCertificate: any): Certificate | und
             logger.error('PubKey is undefined');
             return undefined;
         } else {
-            const certificate: Certificate = new Certificate(pubKey, hexToBigint(serverSignature.safeSignature));
+            const certificate: Certificate = new Certificate(pubKey, hexToBigint(serverSignature));
             logger.info(`Certificate Parsed.`);
             return certificate;
         }
@@ -62,4 +64,14 @@ export function verifySignature(receivedSign: bigint, serverPublicKey: RSAPublic
     }
     
     return success;
+}
+
+export function decryptDNI(parts: string[]): string{
+    let buff: Buffer[] = [];
+    parts.forEach(
+        (item) => {
+            buff.push(Buffer.from(item, 'hex'));
+        }
+    );
+    return shamir.combine(buff).toString('utf8');
 }

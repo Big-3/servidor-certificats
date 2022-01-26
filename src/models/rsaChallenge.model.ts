@@ -1,6 +1,7 @@
 import { RSAPublicKey } from "@big3/ciber-modules";
 import { hexToBigint, textToBuf, bufToHex, bigintToHex } from "bigint-conversion";
 import { Logger } from "tslog";
+import * as bcu from 'bigint-crypto-utils';
 import { randomMSG } from "../utils/challenge.utils";
 import { genRandomId } from "../utils/id.utils";
 import { Certificate } from "./certificate.model";
@@ -18,7 +19,7 @@ export class RSAChallenge{
     static init(userCertificate: Certificate): RSAChallenge{
         const logger = new Logger();
         logger.info('New RSA challenge');
-        const clearText = bufToHex(textToBuf(randomMSG()));
+        const clearText = bigintToHex((bcu.randBetween(userCertificate.getPubKey().getModN(), 128n)));
         const userPubKey: RSAPublicKey = userCertificate.getPubKey();
         const challengeText = userPubKey.encrypt(hexToBigint(clearText));
 
@@ -50,14 +51,14 @@ export class RSAChallengeManager{
 
     addRsaChallenge(challenge: RSAChallenge): [Boolean, String]{
         this._logger.info(`New petition to add RSA challenge`);
-        let id = genRandomId();
+        let id = randomMSG();
 
         while(this._challenges.has(id)){
-            id = genRandomId();
+            id = randomMSG();
         }
 
         this._challenges.set(id, challenge);
-        this._logger.info(`Challenge pushed`);
+        this._logger.info(`Challenge pushed with id ${id}`);
         return [true, id];
 
     }
@@ -69,7 +70,7 @@ export class RSAChallengeManager{
         this._logger.info(`New petition to validate ${id} with ${decryptedMSG}`);
 
         const challenge = this._challenges.get(id);
-        if(challenge?.getSafeChallengeText() == decryptedChallengeMSG){
+        if(challenge!.getClearText() == decryptedChallengeMSG){
             this._logger.info(`Session ${id} validated.`);
             this._challenges.delete(id);
             success = true;

@@ -1,5 +1,5 @@
 import { generateRSAKeys, RSAPrivateKey, RSAPublicKey } from "@big3/ciber-modules";
-import { bigintToHex, hexToBigint } from "bigint-conversion";
+import { bigintToHex, hexToBigint, bigintToText } from "bigint-conversion";
 import {Logger} from "tslog";
 import { genDniId } from "../utils/id.utils";
 
